@@ -7,18 +7,13 @@
 
 import Foundation
 
-final class Article: Identifiable, Codable, Hashable {
+final class Article: Identifiable, Codable {
     var id: Int
     var title: String
     var url: URL
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(self.id)
-    }
-    
-    static func == (lhs: Article, rhs: Article) -> Bool {
-        return lhs.id == rhs.id
-    }
+    var byline: String
+    var publishedDate: Date
+    var media: [Media]
 }
 
 #if DEBUG
@@ -26,9 +21,11 @@ final class Article: Identifiable, Codable, Hashable {
 extension Article {
     static func mock() -> Article {
         return try! Article(from: [
-            "id": 1,
-            "title": "Article head title text",
-            "url": "https://google.com",
+            "id": 100000007456461,
+            "title": "Immunity to the Coronavirus May Last Years, New Data Hint",
+            "url": "https://www.nytimes.com/2020/11/17/health/coronavirus-immunity.html",
+            "byline": "By Apoorva Mandavilli",
+            "published_date": "2020-11-17",
         ])
     }
 }

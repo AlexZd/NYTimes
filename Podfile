@@ -8,7 +8,8 @@ platform :ios, '13.0'
 inhibit_all_warnings!
 
 def main_pods
-	pod 'Alamofire', '5.3.0'
+  pod 'Alamofire', '5.3.0'
+  pod 'AlamofireImage', '4.1'
 end
 
 target 'NYTimes' do

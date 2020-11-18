@@ -11,8 +11,9 @@ import Combine
 final class NewsListViewModel<Repo: PopularNewsRepo>: ObservableObject {
     @Published private(set) var isLoading: Bool = false
     @Published private(set) var title: String?
-    @Published private(set) var articles: [Article] = []
+    @Published private(set) var articles: [NewsItemViewModel] = []
     @Published private(set) var error: Error?
+    @Published private(set) var days: Int = 1
     
     private let index = PassthroughSubject<Int, Never>()
     private var subscriptions = Set<AnyCancellable>()
@@ -36,18 +37,26 @@ final class NewsListViewModel<Repo: PopularNewsRepo>: ObservableObject {
             self?.isLoading = false
             switch result {
             case .success(let response):
-                self?.articles = response.results
+                self?.articles = response.results.map({ NewsItemViewModel(with: $0) })
                 self?.error = nil
             case .failure(let error):
                 self?.error = error
             }
         }).store(in: &self.subscriptions)
+        
+        self.$days.removeDuplicates().sink(receiveValue: { [weak self] days in
+            self?.load(days: days)
+        }).store(in: &self.subscriptions)
     }
     
     //MARK: - Methods
     
-    func load(days: Int = 1) {
+    func load(days: Int) {
         self.isLoading = true
         self.index.send(days)
+    }
+    
+    func daySelected(days: Int) {
+        self.days = days
     }
 }
