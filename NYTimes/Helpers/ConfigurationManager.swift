@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Alamofire
 
 final class ConfigurationManager {
     public enum Configuration {
@@ -30,12 +31,11 @@ final class ConfigurationManager {
     
     var configuration: Configuration
     
-    private init(with configuration: Configuration) {
-        self.configuration = configuration
-    }
-    
     static func initialize(with configuration: Configuration) {
         Self.shared = Self.init(with: configuration)
     }
     
+    private init(with configuration: Configuration) {
+        self.configuration = configuration
+    }
 }
