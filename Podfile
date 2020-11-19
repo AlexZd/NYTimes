@@ -10,6 +10,7 @@ inhibit_all_warnings!
 def main_pods
   pod 'Alamofire', '5.3.0'
   pod 'AlamofireImage', '4.1'
+  pod 'SwiftLint', '0.41.0'
 end
 
 target 'NYTimes' do
