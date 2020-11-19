@@ -33,23 +33,46 @@ struct ArticleView: View {
                         .foregroundColor(Color(UIColor.secondaryLabel))
                         .multilineTextAlignment(.trailing)
                 }
-                Text(self.viewModel.title)
-                    .font(/*@START_MENU_TOKEN@*/.headline/*@END_MENU_TOKEN@*/)
-                    .foregroundColor(Color(UIColor.label))
-                Text(self.viewModel.subtitle)
-                    .font(.subheadline)
-                    .foregroundColor(Color(UIColor.secondaryLabel))
-                Text(self.viewModel.text)
-                    .font(.body)
-                    .foregroundColor(Color(UIColor.label))
-                Spacer()
-                HStack {
-                    Spacer()
-                    Button("Read more...") {
-                        self.showSafari = true
-                    }.sheet(isPresented: $showSafari) {
-                        SafariView(url: self.viewModel.url)
+                Group {
+                    Text(self.viewModel.title)
+                        .font(/*@START_MENU_TOKEN@*/.headline/*@END_MENU_TOKEN@*/)
+                        .foregroundColor(Color(UIColor.label))
+                    Text(self.viewModel.subtitle)
+                        .font(.subheadline)
+                        .foregroundColor(Color(UIColor.secondaryLabel))
+                    Text(self.viewModel.text)
+                        .font(.body)
+                        .foregroundColor(Color(UIColor.label))
+                    HStack {
+                        Spacer()
+                        Button("Read more...") {
+                            self.showSafari = true
+                        }
+                        .sheet(isPresented: $showSafari) {
+                            SafariView(url: self.viewModel.url)
+                        }
+                        .padding(8)
                     }
+
+                }
+                if let caption = self.viewModel.mediaCaption {
+                    Group {
+                        Text("Media caption")
+                            .font(/*@START_MENU_TOKEN@*/.headline/*@END_MENU_TOKEN@*/)
+                            .foregroundColor(Color(UIColor.label))
+                        Text(caption)
+                            .font(/*@START_MENU_TOKEN@*/.caption/*@END_MENU_TOKEN@*/)
+                            .foregroundColor(Color(UIColor.label))
+                        Spacer()
+                    }
+                }
+                Group {
+                    Text("Keywords")
+                        .font(/*@START_MENU_TOKEN@*/.headline/*@END_MENU_TOKEN@*/)
+                        .foregroundColor(Color(UIColor.label))
+                    Text(self.viewModel.keywords)
+                        .font(/*@START_MENU_TOKEN@*/.caption/*@END_MENU_TOKEN@*/)
+                        .foregroundColor(Color(UIColor.label))
                 }
             }
             .padding()

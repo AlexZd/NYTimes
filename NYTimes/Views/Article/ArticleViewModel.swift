@@ -17,6 +17,8 @@ final class ArticleViewModel: ObservableObject {
     @Published private(set) var title: String
     @Published private(set) var subtitle: String
     @Published private(set) var text: String
+    @Published private(set) var mediaCaption: String?
+    @Published private(set) var keywords: String
     @Published private(set) var url: URL
     
     @Published private var photoUrl: URL?
@@ -28,8 +30,11 @@ final class ArticleViewModel: ObservableObject {
         self.title = article.title
         self.subtitle = article.byline
         self.text = article.abstract
-        self.photoUrl = article.media.first?[.medium440]?.url
+        let media = article.media.first
+        self.photoUrl = media?[.medium440]?.url
+        self.mediaCaption = media?.caption
         self.url = article.url
+        self.keywords = article.adxKeywords.components(separatedBy: ";").joined(separator: "; ")
         
         let formatter = DateFormatter()
         formatter.dateStyle = .long

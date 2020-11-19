@@ -23,9 +23,11 @@ extension Article {
         }
         
         enum CodingKeys: String, CodingKey {
+            case caption
             case metadata = "media-metadata"
         }
         
+        var caption: String
         var metadata: [Metadata]
         
         subscript(key: Metadata.Format) -> Metadata? {

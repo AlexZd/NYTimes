@@ -17,6 +17,8 @@ class ArticleTests: XCTestCase {
         XCTAssertEqual(article.byline, "By Apoorva Mandavilli")
         XCTAssertEqual(article.publishedDate, DateComponents(calendar: Calendar.current, year: 2020, month: 11, day: 17).date)
         XCTAssertEqual(article.media.count, 1)
+        XCTAssertEqual(article.abstract, "Joseph R. Biden Jr. achieved victory offering a message of healing and unity. He will return to Washington facing a daunting set of crises.")
+        XCTAssertEqual(article.adxKeywords, "Immune System;Coronavirus (2019-nCoV);Antibodies;Vaccination and Immunization;SARS (Severe Acute Respiratory Syndrome);your-feed-science;La Jolla (Calif)")
     }
 
 }

@@ -15,4 +15,5 @@ final class Article: Identifiable, Codable {
     var publishedDate: Date
     var abstract: String
     var media: [Media]
+    var adxKeywords: String
 }

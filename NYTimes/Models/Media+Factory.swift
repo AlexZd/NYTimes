@@ -53,6 +53,7 @@ extension Article.Media {
         enum JSON {
             static func json() -> [String: Any] {
                 return [
+                    "caption": "Blood was drawn for a Covid-19 antibody test at the University of Arizona in Tucson earlier this year.",
                     "media-metadata": [
                         Metadata.Factory.JSON.thumb(),
                         Metadata.Factory.JSON.medium210(),
