@@ -10,13 +10,10 @@ import XCTest
 
 
 final class MediaTests: XCTestCase {
-    static var json: [String: Any] = [
-        "media-metadata": [MetadataTests.jsonThumb, MetadataTests.jsonMedium210, MetadataTests.jsonMedium420]
-    ]
-
+    
     func testParse() throws {
-        let media = try Article.Media(from: Self.json)
+        let media = try Article.Media(from: Article.Media.Factory.JSON.json())
         XCTAssertEqual(media.metadata.count, 3)
     }
-
+    
 }

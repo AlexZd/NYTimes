@@ -15,20 +15,3 @@ final class Article: Identifiable, Codable {
     var publishedDate: Date
     var media: [Media]
 }
-
-#if DEBUG
-
-extension Article {
-    static let json: [String: Any] = [
-        "id": 100000007456461,
-        "title": "Immunity to the Coronavirus May Last Years, New Data Hint",
-        "url": "https://www.nytimes.com/2020/11/17/health/coronavirus-immunity.html",
-        "byline": "By Apoorva Mandavilli",
-        "published_date": "2020-11-17",
-    ]
-    static func mock() -> Article {
-        return try! Article(from: Self.json)
-    }
-}
-
-#endif

@@ -38,13 +38,17 @@ final class MockPopularNewsRepo: PopularNewsRepo {
         let results = 10
         let response = PopularNewsResponse(copyright: "Copyright MockPopularNewsRepo",
                                            numResults: results,
-                                           results: Array(repeating: Article.mock(), count: results))
-        return Just(response).setFailureType(to: Error.self).eraseToAnyPublisher()
+                                           results: Array(repeating: Article.Factory.Mock.mock(), count: results))
+        return Just(response).setFailureType(to: Error.self)
+            .delay(for: 1, scheduler: RunLoop.main)
+            .eraseToAnyPublisher()
     }
 }
 
 final class MockErrorPopularNewsRepo: PopularNewsRepo {
     func index(days: Int) -> AnyPublisher<PopularNewsResponse, Error> {
-        return Just(()).tryMap({ throw ResponseError.unknown.toError(code: 500) }).eraseToAnyPublisher()
+        return Just(()).tryMap({ throw ResponseError.unknown.toError(code: 500) })
+            .delay(for: 1, scheduler: RunLoop.main)
+            .eraseToAnyPublisher()
     }
 }
