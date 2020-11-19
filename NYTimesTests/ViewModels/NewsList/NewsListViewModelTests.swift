@@ -15,15 +15,6 @@ class NewsListViewModelTests: XCTestCase {
     
     private var subscriptions = Set<AnyCancellable>()
     
-    override func setUpWithError() throws {
-        self.validViewModel = NewsListViewModel<MockPopularNewsRepo>()
-        self.invalidViewModel = NewsListViewModel<MockErrorPopularNewsRepo>()
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-    
     func testTitleLoading() {
         self.validViewModel.$title.first().sink { (title) in
             XCTAssertEqual(title, "Loading...")

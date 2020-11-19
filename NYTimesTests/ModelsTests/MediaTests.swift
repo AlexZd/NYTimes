@@ -9,7 +9,7 @@ import XCTest
 @testable import NYTimes
 
 
-final class MediaTests: XCTestCase {
+class MediaTests: XCTestCase {
     
     func testParse() throws {
         let media = try Article.Media(from: Article.Media.Factory.JSON.json())

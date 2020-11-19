@@ -8,7 +8,7 @@
 import XCTest
 @testable import NYTimes
 
-final class MetadataTests: XCTestCase {
+class MetadataTests: XCTestCase {
     func testParseThumb() throws {
         let metadata = try Article.Media.Metadata(from: Article.Media.Metadata.Factory.JSON.thumb())
         XCTAssertEqual(metadata.url, URL(string: "https://static01.nyt.com/images/2020/11/04/us/politics/04TRUMP-ELECTION-1/04TRUMP-ELECTION-1-thumbStandard-v2.jpg"))
