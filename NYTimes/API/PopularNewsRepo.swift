@@ -33,8 +33,6 @@ final class RemotePopularNewsRepo: PopularNewsRepo {
     }
 }
 
-#if DEBUG
-
 final class MockPopularNewsRepo: PopularNewsRepo {
     func index(days: Int) -> AnyPublisher<PopularNewsResponse, Error> {
         let results = 10
@@ -50,5 +48,3 @@ final class MockErrorPopularNewsRepo: PopularNewsRepo {
         return Just(()).tryMap({ throw ResponseError.unknown.toError(code: 500) }).eraseToAnyPublisher()
     }
 }
-
-#endif
