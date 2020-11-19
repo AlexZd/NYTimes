@@ -15,7 +15,7 @@ final class NewsListViewModel<Repo: PopularNewsRepo>: ObservableObject {
     @Published private(set) var error: Error?
     @Published private(set) var days: Int = 1
     
-    private let index = PassthroughSubject<Int, Never>()
+    let index = PassthroughSubject<Int, Never>()
     private var subscriptions = Set<AnyCancellable>()
     
     init() {

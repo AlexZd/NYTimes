@@ -9,7 +9,8 @@ import XCTest
 @testable import NYTimes
 
 class ArticleTests: XCTestCase {
-    func testParse() throws {
+    
+    func testDecoding() throws {
         let article = try Article(from: Article.Factory.JSON.json())
         XCTAssertEqual(article.id, 100000007456461)
         XCTAssertEqual(article.title, "Immunity to the Coronavirus May Last Years, New Data Hint")

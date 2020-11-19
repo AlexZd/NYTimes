@@ -60,7 +60,7 @@ final class NewsListTableViewCell: UITableViewCell {
     
     func setup(with item: NewsItemViewModel) {
         if let url = item.thumbUrl { self.thumbImage.af.setImage(withURL: url) }
-        self.thumbImage.isHidden = item.thumbHidden
+        self.thumbImage.isHidden = item.isThumbHidden
         self.titleLabel.text = item.title
         self.subtitleLabel.text = item.subtitle
         self.dateLabel.text = item.date

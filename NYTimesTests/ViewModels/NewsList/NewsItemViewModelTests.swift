@@ -26,7 +26,7 @@ class NewsItemViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.subtitle, "By Apoorva Mandavilli")
         XCTAssertEqual(viewModel.date, "Nov 17, 2020")
         XCTAssertEqual(viewModel.thumbUrl, URL(string: "https://static01.nyt.com/images/2020/11/04/us/politics/04TRUMP-ELECTION-1/04TRUMP-ELECTION-1-thumbStandard-v2.jpg"))
-        XCTAssertFalse(viewModel.thumbHidden)
+        XCTAssertFalse(viewModel.isThumbHidden)
     }
     
     func testEmptyMedia() {
@@ -34,7 +34,7 @@ class NewsItemViewModelTests: XCTestCase {
         article.media = []
         let viewModel = NewsItemViewModel(with: article)
         XCTAssertNil(viewModel.thumbUrl)
-        XCTAssertTrue(viewModel.thumbHidden)
+        XCTAssertTrue(viewModel.isThumbHidden)
     }
 
 }

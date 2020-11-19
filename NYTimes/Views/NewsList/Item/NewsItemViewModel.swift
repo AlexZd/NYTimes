@@ -13,7 +13,7 @@ final class NewsItemViewModel: ObservableObject, Hashable {
     @Published private(set) var subtitle: String
     @Published private(set) var date: String
     @Published private(set) var thumbUrl: URL?
-    @Published private(set) var thumbHidden: Bool
+    @Published private(set) var isThumbHidden: Bool
     
     private(set) var article: Article
     
@@ -26,7 +26,7 @@ final class NewsItemViewModel: ObservableObject, Hashable {
         let media = article.media.first
         let thumbUrl = media?[.thumb]?.url
         self.thumbUrl = thumbUrl
-        self.thumbHidden = thumbUrl == nil
+        self.isThumbHidden = thumbUrl == nil
         
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
