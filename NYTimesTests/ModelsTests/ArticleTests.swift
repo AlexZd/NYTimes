@@ -22,4 +22,10 @@ class ArticleTests: XCTestCase {
         XCTAssertEqual(article.adxKeywords, "Immune System;Coronavirus (2019-nCoV);Antibodies;Vaccination and Immunization;SARS (Severe Acute Respiratory Syndrome);your-feed-science;La Jolla (Calif)")
     }
 
+    func testDecodingError() {
+        var json = Article.Factory.JSON.json()
+        json["published_date"] = "17.11.2020"
+        XCTAssertThrowsError(try Article(from: json))
+    }
+
 }

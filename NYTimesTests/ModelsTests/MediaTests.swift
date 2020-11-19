@@ -16,4 +16,9 @@ class MediaTests: XCTestCase {
         XCTAssertEqual(media.caption, "Blood was drawn for a Covid-19 antibody test at the University of Arizona in Tucson earlier this year.")
     }
 
+    func testSubscript() {
+        let media = Article.Media.Factory.Mock.mock()
+        XCTAssertEqual(media[.medium210]?.url.absoluteString, "https://static01.nyt.com/images/2020/11/16/opinion/16oster-01/16oster-01-mediumThreeByTwo210-v2.jpg")
+    }
+
 }

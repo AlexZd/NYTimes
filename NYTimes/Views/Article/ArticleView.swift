@@ -9,8 +9,8 @@ import SwiftUI
 import SafariServices
 
 struct ArticleView: View {
-    @ObservedObject var viewModel: ArticleViewModel
-    @State var showSafari = false
+    @ObservedObject private var viewModel: ArticleViewModel
+    @State private var showSafari = false
 
     init(with viewModel: ArticleViewModel) {
         self.viewModel = viewModel

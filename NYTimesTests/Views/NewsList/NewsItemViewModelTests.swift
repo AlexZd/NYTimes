@@ -37,4 +37,9 @@ class NewsItemViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isThumbHidden)
     }
 
+    func testHashable() {
+        let viewModel = NewsItemViewModel(with: Article.Factory.Mock.mock())
+        XCTAssertEqual(viewModel.hashValue, 100000007456461.hashValue)
+    }
+
 }
