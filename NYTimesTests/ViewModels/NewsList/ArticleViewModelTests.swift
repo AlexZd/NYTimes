@@ -21,7 +21,7 @@ class ArticleViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.keywords, "Immune System; Coronavirus (2019-nCoV); Antibodies; Vaccination and Immunization; SARS (Severe Acute Respiratory Syndrome); your-feed-science; La Jolla (Calif)")
         XCTAssertFalse(viewModel.isPhotoHidden)
     }
-    
+
     func testEmptyMedia() {
         let article = Article.Factory.Mock.mock()
         article.media = []

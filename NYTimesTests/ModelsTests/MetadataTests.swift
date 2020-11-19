@@ -16,7 +16,7 @@ class MetadataTests: XCTestCase {
         XCTAssertEqual(metadata.height, 75)
         XCTAssertEqual(metadata.width, 75)
     }
-    
+
     func testDecodingMedium210() throws {
         let metadata = try Article.Media.Metadata(from: Article.Media.Metadata.Factory.JSON.medium210())
         XCTAssertEqual(metadata.url, URL(string: "https://static01.nyt.com/images/2020/11/16/opinion/16oster-01/16oster-01-mediumThreeByTwo210-v2.jpg"))
@@ -24,7 +24,7 @@ class MetadataTests: XCTestCase {
         XCTAssertEqual(metadata.height, 140)
         XCTAssertEqual(metadata.width, 210)
     }
-    
+
     func testDecodingMedium440() throws {
         let metadata = try Article.Media.Metadata(from: Article.Media.Metadata.Factory.JSON.medium440())
         XCTAssertEqual(metadata.url, URL(string: "https://static01.nyt.com/images/2020/11/16/opinion/16oster-01/16oster-01-mediumThreeByTwo440-v2.jpg"))
@@ -32,5 +32,5 @@ class MetadataTests: XCTestCase {
         XCTAssertEqual(metadata.height, 293)
         XCTAssertEqual(metadata.width, 440)
     }
-    
+
 }

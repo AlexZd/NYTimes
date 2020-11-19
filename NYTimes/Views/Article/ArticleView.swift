@@ -11,18 +11,18 @@ import SafariServices
 struct ArticleView: View {
     @ObservedObject var viewModel: ArticleViewModel
     @State var showSafari = false
-    
+
     init(with viewModel: ArticleViewModel) {
         self.viewModel = viewModel
     }
-    
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 8) {
                 if !self.viewModel.isPhotoHidden {
                     Image(uiImage: self.viewModel.photo ?? UIImage())
                         .resizable()
-                        .aspectRatio(3/2, contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+                        .aspectRatio(3/2, contentMode: .fill)
                         .background(Color.init(UIColor.systemFill))
                         .cornerRadius(4)
                 }
@@ -76,7 +76,7 @@ struct ArticleView: View {
 
 struct SafariView: UIViewControllerRepresentable {
     typealias UIViewControllerType = SFSafariViewController
-    
+
     let url: URL
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<SafariView>) -> SFSafariViewController {
@@ -95,7 +95,7 @@ final class ArticleViewController: UIHostingController<ArticleView> {
         self.title = "Details"
         self.navigationItem.largeTitleDisplayMode = .never
     }
-    
+
     @objc required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

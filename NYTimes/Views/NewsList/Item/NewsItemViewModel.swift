@@ -14,34 +14,34 @@ final class NewsItemViewModel: ObservableObject, Hashable {
     @Published private(set) var date: String
     @Published private(set) var thumbUrl: URL?
     @Published private(set) var isThumbHidden: Bool
-    
+
     private(set) var article: Article
-    
-    //MARK: - Lifecycle
-    
+
+    // MARK: - Lifecycle
+
     init(with article: Article) {
         self.title = article.title
         self.subtitle = article.byline
-        
+
         let media = article.media.first
         let thumbUrl = media?[.thumb]?.url
         self.thumbUrl = thumbUrl
         self.isThumbHidden = thumbUrl == nil
-        
+
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
         self.date = formatter.string(from: article.publishedDate)
-        
+
         self.article = article
     }
-    
-    //MARK: - Hashable
-    
+
+    // MARK: - Hashable
+
     func hash(into hasher: inout Hasher) {
         hasher.combine(self.article.id)
     }
-    
+
     static func == (lhs: NewsItemViewModel, rhs: NewsItemViewModel) -> Bool {
         return lhs.article.id == rhs.article.id
     }

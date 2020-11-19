@@ -14,23 +14,23 @@ final class NewsListViewModel<Repo: PopularNewsRepo>: ObservableObject {
     @Published private(set) var articles: [NewsItemViewModel] = []
     @Published private(set) var error: Error?
     @Published private(set) var days: Int = 1
-    
+
     let index = PassthroughSubject<Int, Never>()
     private var subscriptions = Set<AnyCancellable>()
-    
+
     init() {
         self.setupBindings()
     }
-    
-    //MARK: - Setup
-    
+
+    // MARK: - Setup
+
     private func setupBindings() {
         Publishers.CombineLatest3(self.$articles, self.$isLoading, self.$error).map({ (articles, isLoading, error) -> String in
             guard error == nil else { return "Error occured" }
             guard !isLoading else { return "Loading..." }
             return "Popular News (\(articles.count))"
         }).assignNoRetain(to: \.title, on: self).store(in: &self.subscriptions)
-        
+
         self.index.flatMap({ (days) -> AnyPublisher<Result<PopularNewsResponse, Error>, Never> in
             Repo().index(days: days).map({ .success($0) }).catch { Just(.failure($0)) }.eraseToAnyPublisher()
         }).sink(receiveValue: { [weak self] (result) in
@@ -43,19 +43,19 @@ final class NewsListViewModel<Repo: PopularNewsRepo>: ObservableObject {
                 self?.error = error
             }
         }).store(in: &self.subscriptions)
-        
+
         self.$days.removeDuplicates().sink(receiveValue: { [weak self] days in
             self?.load(days: days)
         }).store(in: &self.subscriptions)
     }
-    
-    //MARK: - Methods
-    
+
+    // MARK: - Methods
+
     func load(days: Int) {
         self.isLoading = true
         self.index.send(days)
     }
-    
+
     func daySelected(days: Int) {
         self.days = days
     }

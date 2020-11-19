@@ -14,22 +14,22 @@ extension Article {
             var format: Format
             var height: Int
             var width: Int
-            
+
             enum Format: String, Codable {
                 case thumb = "Standard Thumbnail"
                 case medium210 = "mediumThreeByTwo210"
                 case medium440 = "mediumThreeByTwo440"
             }
         }
-        
+
         enum CodingKeys: String, CodingKey {
             case caption
             case metadata = "media-metadata"
         }
-        
+
         var caption: String
         var metadata: [Metadata]
-        
+
         subscript(key: Metadata.Format) -> Metadata? {
             self.metadata.first(where: { $0.format == key })
         }

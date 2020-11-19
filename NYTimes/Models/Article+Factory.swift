@@ -25,7 +25,7 @@ extension Article {
                 ]
             }
         }
-        
+
         enum Mock {
             static func mock() -> Article {
                 return try! Article(from: Article.Factory.JSON.json())
