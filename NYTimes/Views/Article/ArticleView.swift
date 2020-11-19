@@ -26,6 +26,11 @@ struct ArticleView: View {
                         .background(Color.init(UIColor.systemFill))
                         .cornerRadius(4)
                 }
+                if let caption = self.viewModel.mediaCaption {
+                    Text(caption)
+                        .font(/*@START_MENU_TOKEN@*/.caption/*@END_MENU_TOKEN@*/)
+                        .foregroundColor(Color(UIColor.label))
+                }
                 HStack {
                     Spacer()
                     Text(self.viewModel.date)
@@ -54,17 +59,6 @@ struct ArticleView: View {
                         .padding(8)
                     }
 
-                }
-                if let caption = self.viewModel.mediaCaption {
-                    Group {
-                        Text("Media caption")
-                            .font(/*@START_MENU_TOKEN@*/.headline/*@END_MENU_TOKEN@*/)
-                            .foregroundColor(Color(UIColor.label))
-                        Text(caption)
-                            .font(/*@START_MENU_TOKEN@*/.caption/*@END_MENU_TOKEN@*/)
-                            .foregroundColor(Color(UIColor.label))
-                        Spacer()
-                    }
                 }
                 Group {
                     Text("Keywords")
