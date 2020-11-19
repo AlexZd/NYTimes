@@ -19,6 +19,7 @@ extension Article {
                     "url": "https://www.nytimes.com/2020/11/17/health/coronavirus-immunity.html",
                     "byline": "By Apoorva Mandavilli",
                     "published_date": "2020-11-17",
+                    "abstract": "Joseph R. Biden Jr. achieved victory offering a message of healing and unity. He will return to Washington facing a daunting set of crises.",
                     "media": [Media.Factory.JSON.json()]
                 ]
             }

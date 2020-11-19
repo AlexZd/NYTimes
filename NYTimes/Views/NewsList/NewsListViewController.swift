@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-final class NewsListViewController<Repo: PopularNewsRepo>: UIViewController {
+final class NewsListViewController<Repo: PopularNewsRepo>: UIViewController, UITableViewDelegate {
     private enum Section: CaseIterable {
         case all
     }
@@ -26,8 +26,17 @@ final class NewsListViewController<Repo: PopularNewsRepo>: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
+        self.navigationItem.largeTitleDisplayMode = .always
         self.layoutViews()
         self.setupBindings()
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let selected = self.tableView.indexPathForSelectedRow {
+            self.tableView.deselectRow(at: selected, animated: true)
+        }
     }
     
     //MARK: - Layout
@@ -89,6 +98,15 @@ final class NewsListViewController<Repo: PopularNewsRepo>: UIViewController {
         self.dataSource.apply(snapshot, animatingDifferences: false)
     }
     
+    //MARK: - UITableViewDelegate
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let article = self.viewModel.articles[indexPath.row].article
+        let viewModel = ArticleViewModel(with: article)
+        let viewController = ArticleViewController(rootView: ArticleView(with: viewModel))
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
     //MARK: - UI
     
     private func makeDataSource() -> UITableViewDiffableDataSource<Section, NewsItemViewModel> {
@@ -101,6 +119,7 @@ final class NewsListViewController<Repo: PopularNewsRepo>: UIViewController {
     
     private func makeTableView() -> UITableView {
         let tableView = UITableView(frame: self.view.bounds)
+        tableView.delegate = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(NewsListTableViewCell.self, forCellReuseIdentifier: "NewsListTableViewCell")
         tableView.tableFooterView = UIView()

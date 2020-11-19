@@ -13,5 +13,6 @@ final class Article: Identifiable, Codable {
     var url: URL
     var byline: String
     var publishedDate: Date
+    var abstract: String
     var media: [Media]
 }

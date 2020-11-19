@@ -15,7 +15,7 @@ final class NewsItemViewModel: ObservableObject, Hashable {
     @Published private(set) var thumbUrl: URL?
     @Published private(set) var thumbHidden: Bool
     
-    private var article: Article
+    private(set) var article: Article
     
     //MARK: - Lifecycle
     
