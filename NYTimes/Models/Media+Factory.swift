@@ -5,6 +5,8 @@
 //  Created by Alex on 19/11/2020.
 //
 
+#if DEBUG
+
 import Foundation
 
 extension Article.Media.Metadata {
@@ -67,3 +69,5 @@ extension Article.Media {
         }
     }
 }
+
+#endif
