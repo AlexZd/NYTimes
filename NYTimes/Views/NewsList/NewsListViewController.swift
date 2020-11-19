@@ -29,7 +29,6 @@ final class NewsListViewController<Repo: PopularNewsRepo>: UIViewController, UIT
         self.navigationItem.largeTitleDisplayMode = .always
         self.layoutViews()
         self.setupBindings()
-
     }
 
     override func viewWillAppear(_ animated: Bool) {

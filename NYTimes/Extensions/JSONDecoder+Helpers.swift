@@ -23,6 +23,8 @@ extension JSONDecoder {
                 date = d
             }
 
+            //Here we can put few more general formats for project
+
             guard let d = date else {
                 throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date string \(dateStr)")
             }
