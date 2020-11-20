@@ -25,6 +25,7 @@ struct ArticleView: View {
                         .aspectRatio(3/2, contentMode: .fill)
                         .background(Color.init(UIColor.systemFill))
                         .cornerRadius(4)
+                        .accessibility(identifier: "media")
                 }
                 if let caption = self.viewModel.mediaCaption {
                     Text(caption)

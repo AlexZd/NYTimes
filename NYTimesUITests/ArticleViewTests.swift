@@ -22,7 +22,7 @@ class ArticleViewTests: XCTestCase {
 
         XCTAssertTrue(app.navigationBars.staticTexts["Details"].exists)
 
-        let image = app.scrollViews.images.element
+        let image = app.scrollViews.images["media"]
         XCTAssertTrue(image.isHittable)
         let realRatio = image.frame.width / image.frame.height
         let expectedRation: CGFloat = 3 / 2
