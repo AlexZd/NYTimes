@@ -32,8 +32,11 @@ struct ArticleView: View {
                         .foregroundColor(Color(UIColor.label))
                         .accessibility(identifier: "mediaCaption")
                 }
-                HStack {
+                HStack(alignment: .center) {
                     Spacer()
+                    Image(systemName: "calendar")
+                        .imageScale(.small)
+                        .foregroundColor(Color(UIColor.secondaryLabel))
                     Text(self.viewModel.date)
                         .font(/*@START_MENU_TOKEN@*/.caption/*@END_MENU_TOKEN@*/)
                         .foregroundColor(Color(UIColor.secondaryLabel))
@@ -45,19 +48,28 @@ struct ArticleView: View {
                         .font(/*@START_MENU_TOKEN@*/.headline/*@END_MENU_TOKEN@*/)
                         .foregroundColor(Color(UIColor.label))
                         .accessibility(identifier: "title")
-                    Text(self.viewModel.subtitle)
-                        .font(.subheadline)
-                        .foregroundColor(Color(UIColor.secondaryLabel))
-                        .accessibility(identifier: "subtitle")
+                    HStack {
+                        Image(systemName: "person.circle")
+                            .imageScale(.small)
+                            .foregroundColor(Color(UIColor.secondaryLabel))
+                        Text(self.viewModel.subtitle)
+                            .font(.subheadline)
+                            .foregroundColor(Color(UIColor.secondaryLabel))
+                            .accessibility(identifier: "subtitle")
+                    }
                     Text(self.viewModel.text)
                         .font(.body)
                         .foregroundColor(Color(UIColor.label))
                         .accessibility(identifier: "text")
                     HStack {
                         Spacer()
-                        Button("Read more...") {
+                        Button(action: {
                             self.showSafari = true
-                        }
+                        }, label: {
+                            Text("Read more")
+                            Image(systemName: "newspaper")
+                                .imageScale(.small)
+                        })
                         .sheet(isPresented: $showSafari) {
                             SafariView(url: self.viewModel.url)
                         }

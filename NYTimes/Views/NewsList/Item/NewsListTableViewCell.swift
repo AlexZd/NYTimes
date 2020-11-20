@@ -53,7 +53,19 @@ final class NewsListTableViewCell: UITableViewCell {
 
         self.textStack.addArrangedSubview(self.titleLabel)
         self.textStack.addArrangedSubview(self.subtitleLabel)
-        self.textStack.addArrangedSubview(self.dateLabel)
+
+        let dateStack = UIStackView()
+        dateStack.axis = .horizontal
+        dateStack.spacing = 6
+        dateStack.alignment = .center
+
+        self.textStack.addArrangedSubview(dateStack)
+
+        let icon = UIImageView(image: UIImage(systemName: "calendar", withConfiguration: UIImage.SymbolConfiguration(scale: .small)))
+        icon.tintColor = self.dateLabel.textColor
+
+        dateStack.addArrangedSubview(icon)
+        dateStack.addArrangedSubview(self.dateLabel)
     }
 
     // MARK: - Setup
@@ -90,6 +102,7 @@ final class NewsListTableViewCell: UITableViewCell {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = 8
+        stackView.alignment = .leading
         return stackView
     }
 
