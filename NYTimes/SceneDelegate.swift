@@ -22,7 +22,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-            let navigation = UINavigationController(rootViewController: NewsListViewController<RemotePopularNewsRepo>())
+
+            var viewController: UIViewController = NewsListViewController<RemotePopularNewsRepo>()
+
+            #if DEBUG
+            if CommandLine.arguments.contains("error-testing") {
+                viewController = NewsListViewController<MockErrorPopularNewsRepo>()
+            } else if CommandLine.arguments.contains("success-testing") {
+                viewController = NewsListViewController<MockPopularNewsRepo>()
+            }
+            #endif
+
+            let navigation = UINavigationController(rootViewController: viewController)
             navigation.navigationBar.prefersLargeTitles = true
             window.rootViewController = navigation
             self.window = window

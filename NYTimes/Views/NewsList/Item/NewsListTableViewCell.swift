@@ -98,6 +98,7 @@ final class NewsListTableViewCell: UITableViewCell {
         label.font = UIFont.preferredFont(forTextStyle: .body)
         label.textColor = .label
         label.numberOfLines = 2
+        label.accessibilityIdentifier = "title"
         return label
     }
 
@@ -106,6 +107,7 @@ final class NewsListTableViewCell: UITableViewCell {
         label.textColor = .secondaryLabel
         label.font = UIFont.preferredFont(forTextStyle: .caption1)
         label.numberOfLines = 2
+        label.accessibilityIdentifier = "subtitle"
         return label
     }
 
@@ -113,6 +115,7 @@ final class NewsListTableViewCell: UITableViewCell {
         let label = UILabel()
         label.textColor = .label
         label.font = UIFont.preferredFont(forTextStyle: .caption2)
+        label.accessibilityIdentifier = "date"
         return label
     }
 }

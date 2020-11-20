@@ -30,6 +30,7 @@ struct ArticleView: View {
                     Text(caption)
                         .font(/*@START_MENU_TOKEN@*/.caption/*@END_MENU_TOKEN@*/)
                         .foregroundColor(Color(UIColor.label))
+                        .accessibility(identifier: "mediaCaption")
                 }
                 HStack {
                     Spacer()
@@ -37,17 +38,21 @@ struct ArticleView: View {
                         .font(/*@START_MENU_TOKEN@*/.caption/*@END_MENU_TOKEN@*/)
                         .foregroundColor(Color(UIColor.secondaryLabel))
                         .multilineTextAlignment(.trailing)
+                        .accessibility(identifier: "date")
                 }
                 Group {
                     Text(self.viewModel.title)
                         .font(/*@START_MENU_TOKEN@*/.headline/*@END_MENU_TOKEN@*/)
                         .foregroundColor(Color(UIColor.label))
+                        .accessibility(identifier: "title")
                     Text(self.viewModel.subtitle)
                         .font(.subheadline)
                         .foregroundColor(Color(UIColor.secondaryLabel))
+                        .accessibility(identifier: "subtitle")
                     Text(self.viewModel.text)
                         .font(.body)
                         .foregroundColor(Color(UIColor.label))
+                        .accessibility(identifier: "text")
                     HStack {
                         Spacer()
                         Button("Read more...") {
@@ -57,6 +62,7 @@ struct ArticleView: View {
                             SafariView(url: self.viewModel.url)
                         }
                         .padding(8)
+                        .accessibility(identifier: "readMore")
                     }
 
                 }
@@ -67,6 +73,7 @@ struct ArticleView: View {
                     Text(self.viewModel.keywords)
                         .font(/*@START_MENU_TOKEN@*/.caption/*@END_MENU_TOKEN@*/)
                         .foregroundColor(Color(UIColor.label))
+                        .accessibility(identifier: "keywords")
                 }
             }
             .padding()
