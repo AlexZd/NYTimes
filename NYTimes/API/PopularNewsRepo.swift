@@ -7,7 +7,7 @@
 
 import Foundation
 import Alamofire
-import Combine
+import RxSwift
 
 struct PopularNewsResponse: Decodable {
     let copyright: String
@@ -16,42 +16,45 @@ struct PopularNewsResponse: Decodable {
 }
 
 protocol PopularNewsRepo: Initiable {
-    func index(days: Int) -> AnyPublisher<PopularNewsResponse, Error>
+    func index(days: Int) -> Single<PopularNewsResponse>
 }
 
 final class RemotePopularNewsRepo: PopularNewsRepo {
-    func index(days: Int) -> AnyPublisher<PopularNewsResponse, Error> {
-        let url = ConfigurationManager.shared.configuration.baseUrl
-            .appendingPathComponent("mostpopular/v2/viewed/\(days).json")
-        return NY.request(url, method: .get, parameters: [:]).validateErrors()
-            .publishDecodable(type: PopularNewsResponse.self, decoder: JSONDecoder.default)
-            .tryCompactMap { (response) -> PopularNewsResponse? in
-                if let error = response.error { throw error }
-                return response.value
+    func index(days: Int) -> Single<PopularNewsResponse> {
+        return Single<PopularNewsResponse>.create { single in
+            let url = ConfigurationManager.shared.configuration.baseUrl
+                .appendingPathComponent("mostpopular/v2/viewed/\(days).json")
+            let request = NY.request(url, method: .get, parameters: [:]).validateErrors().responseDecodable(decoder: JSONDecoder.default, completionHandler: { (response: DataResponse<PopularNewsResponse, AFError>) in
+                switch response.result {
+                case .success(let value):
+                    single(.success(value))
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            })
+            return Disposables.create {
+                request.cancel()
             }
-            .eraseToAnyPublisher()
+        }
     }
 }
 
 #if DEBUG
 
 final class MockPopularNewsRepo: PopularNewsRepo {
-    func index(days: Int) -> AnyPublisher<PopularNewsResponse, Error> {
+    func index(days: Int) -> Single<PopularNewsResponse> {
         let results = 10
         let response = PopularNewsResponse(copyright: "Copyright MockPopularNewsRepo",
                                            numResults: results,
                                            results: Array(repeating: Article.Factory.Mock.mock(), count: results))
-        return Just(response).setFailureType(to: Error.self)
-            .delay(for: 1, scheduler: RunLoop.main)
-            .eraseToAnyPublisher()
+        return Single.just(response).delay(RxTimeInterval.seconds(1), scheduler: MainScheduler.instance)
     }
 }
 
 final class MockErrorPopularNewsRepo: PopularNewsRepo {
-    func index(days: Int) -> AnyPublisher<PopularNewsResponse, Error> {
-        return Just(()).tryMap({ throw ResponseError.unknown.toError(code: 500) })
-            .delay(for: 1, scheduler: RunLoop.main)
-            .eraseToAnyPublisher()
+    func index(days: Int) -> Single<PopularNewsResponse> {
+        //Seems `delay` does not work in case of error
+        return Single.error(ResponseError.unknown.toError(code: 500)).delay(RxTimeInterval.seconds(10), scheduler: MainScheduler.instance)
     }
 }
 

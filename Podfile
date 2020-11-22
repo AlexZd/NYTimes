@@ -11,6 +11,12 @@ def main_pods
   pod 'Alamofire', '5.3.0'
   pod 'AlamofireImage', '4.1'
   pod 'SwiftLint', '0.41.0'
+  rx_pods
+end
+
+def rx_pods
+  pod 'RxSwift', '6.0.0-rc.2'
+  pod 'RxCocoa', '6.0.0-rc.2'
 end
 
 target 'NYTimes' do
@@ -18,6 +24,12 @@ target 'NYTimes' do
   workspace 'NYTimes'
   
   main_pods
+end
+
+target 'NYTimesTests' do
+    rx_pods
+    pod 'RxBlocking', '6.0.0-rc.2'
+    pod 'RxTest', '6.0.0-rc.2'
 end
 
 post_install do |installer|
