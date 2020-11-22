@@ -6,17 +6,19 @@
 //
 
 import Foundation
-import Combine
+import RxSwift
+import RxCocoa
 
-final class NewsListViewModel<Repo: PopularNewsRepo>: ObservableObject {
-    @Published private(set) var isLoading: Bool = false
-    @Published private(set) var title: String?
-    @Published private(set) var articles: [NewsItemViewModel] = []
-    @Published private(set) var error: Error?
-    @Published private(set) var days: Int = 1
+final class NewsListViewModel<Repo: PopularNewsRepo> {
+    private(set) var isLoading = BehaviorRelay<Bool>(value: false)
+    private(set) var title = BehaviorRelay<String?>(value: nil)
+    private(set) var articles = BehaviorRelay<[NewsItemViewModel]>(value: [])
+    private(set) var error = BehaviorRelay<Error?>(value: nil)
+    private(set) var days = BehaviorRelay<Int>(value: 1)
 
-    let index = PassthroughSubject<Int, Never>()
-    private var subscriptions = Set<AnyCancellable>()
+    let indexTrigger = PublishRelay<Int>()
+
+    private let disposeBag = DisposeBag()
 
     init() {
         self.setupBindings()
@@ -25,38 +27,32 @@ final class NewsListViewModel<Repo: PopularNewsRepo>: ObservableObject {
     // MARK: - Setup
 
     private func setupBindings() {
-        Publishers.CombineLatest3(self.$articles, self.$isLoading, self.$error).map({ (articles, isLoading, error) -> String in
+        Observable.combineLatest(self.articles, self.isLoading, self.error).map { (articles, isLoading, error) -> String? in
             guard error == nil else { return "Error occured" }
             guard !isLoading else { return "Loading..." }
             return "Popular News (\(articles.count))"
-        }).assignNoRetain(to: \.title, on: self).store(in: &self.subscriptions)
+        }.bind(to: self.title).disposed(by: self.disposeBag)
 
-        self.index.flatMap({ (days) -> AnyPublisher<Result<PopularNewsResponse, Error>, Never> in
-            Repo().index(days: days).map({ .success($0) }).catch { Just(.failure($0)) }.eraseToAnyPublisher()
-        }).sink(receiveValue: { [weak self] (result) in
-            self?.isLoading = false
+        self.indexTrigger.flatMap({ [weak self] (days) -> Single<Result<PopularNewsResponse, Error>> in
+            self?.isLoading.accept(true)
+            return Repo().index(days: days).map({ .success($0) }).catch({ Single.just(.failure($0)) })
+        }).bind(onNext: { [weak self] (result) in
+            self?.isLoading.accept(false)
             switch result {
             case .success(let response):
-                self?.articles = response.results.map({ NewsItemViewModel(with: $0) })
-                self?.error = nil
+                self?.articles.accept(response.results.map({ NewsItemViewModel(with: $0) }))
+                self?.error.accept(nil)
             case .failure(let error):
-                self?.error = error
+                self?.error.accept(error)
             }
-        }).store(in: &self.subscriptions)
+        }).disposed(by: self.disposeBag)
 
-        self.$days.removeDuplicates().sink(receiveValue: { [weak self] days in
-            self?.load(days: days)
-        }).store(in: &self.subscriptions)
+        self.days.distinctUntilChanged().bind(to: self.indexTrigger).disposed(by: self.disposeBag)
     }
 
     // MARK: - Methods
 
-    func load(days: Int) {
-        self.isLoading = true
-        self.index.send(days)
-    }
-
     func daySelected(days: Int) {
-        self.days = days
+        self.days.accept(days)
     }
 }

@@ -6,7 +6,8 @@
 //
 
 import UIKit
-import Combine
+import RxSwift
+import RxCocoa
 
 final class NewsListViewController<Repo: PopularNewsRepo>: UIViewController, UITableViewDelegate {
     private enum Section: CaseIterable {
@@ -16,10 +17,8 @@ final class NewsListViewController<Repo: PopularNewsRepo>: UIViewController, UIT
     private lazy var tableView = self.makeTableView()
     private lazy var errorLabel = self.makeErrorLabel()
 
-    private lazy var dataSource = self.makeDataSource()
-
     private var viewModel = NewsListViewModel<Repo>()
-    private var subscriptions = Set<AnyCancellable>()
+    private let disposeBag = DisposeBag()
 
     // MARK: - Lifecycle
 
@@ -61,7 +60,7 @@ final class NewsListViewController<Repo: PopularNewsRepo>: UIViewController, UIT
         let actionSheet = UIAlertController(title: "Select days", message: nil, preferredStyle: .actionSheet)
         let days = [1, 7, 30]
         for day in days {
-            let title = (self.viewModel.days == day ? "✓ " : "") + String(day) + " " + (day == 1 ? "day" : "days")
+            let title = (self.viewModel.days.value == day ? "✓ " : "") + String(day) + " " + (day == 1 ? "day" : "days")
             actionSheet.addAction(UIAlertAction(title: title, style: .default, handler: { [weak self] (_) in
                 self?.viewModel.daySelected(days: day)
             }))
@@ -73,52 +72,31 @@ final class NewsListViewController<Repo: PopularNewsRepo>: UIViewController, UIT
     // MARK: - Setup
 
     private func setupBindings() {
-        self.viewModel.$title.assignNoRetain(to: \.title, on: self).store(in: &self.subscriptions)
+        self.viewModel.title.bind(to: self.rx.title).disposed(by: self.disposeBag)
 
-        self.viewModel.$isLoading.assignNoRetain(to: \.isHidden, on: self.tableView).store(in: &self.subscriptions)
+        self.viewModel.isLoading.bind(to: self.tableView.rx.isHidden).disposed(by: self.disposeBag)
 
-        self.viewModel.$articles.sink { [weak self] (articles) in
-            self?.update(articles: articles)
-        }.store(in: &self.subscriptions)
-
-        self.viewModel.$error.sink { [weak self] (error) in
+        self.viewModel.error.bind { [weak self] (error) in
             self?.errorLabel.isHidden = error == nil
             self?.tableView.isHidden = error != nil
             self?.errorLabel.text = error?.localizedDescription
-        }.store(in: &self.subscriptions)
-    }
+        }.disposed(by: self.disposeBag)
 
-    // MARK: - Utils
+        self.viewModel.articles.bind(to: self.tableView.rx.items(cellIdentifier: "NewsListTableViewCell")) { (_, model, cell: NewsListTableViewCell) in
+            cell.setup(with: model)
+        }.disposed(by: self.disposeBag)
 
-    func update(articles: [NewsItemViewModel]) {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, NewsItemViewModel>()
-        snapshot.appendSections([.all])
-        snapshot.appendItems(articles)
-        self.dataSource.apply(snapshot, animatingDifferences: false)
-    }
-
-    // MARK: - UITableViewDelegate
-
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let article = self.viewModel.articles[indexPath.row].article
-        let viewModel = ArticleViewModel(with: article)
-        let viewController = ArticleViewController(rootView: ArticleView(with: viewModel))
-        self.navigationController?.pushViewController(viewController, animated: true)
+        self.tableView.rx.modelSelected(NewsItemViewModel.self).map({ $0.article }).subscribe(onNext: { [weak self] (article) in
+            let viewModel = ArticleViewModel(with: article)
+            let viewController = ArticleViewController(rootView: ArticleView(with: viewModel))
+            self?.navigationController?.pushViewController(viewController, animated: true)
+        }).disposed(by: self.disposeBag)
     }
 
     // MARK: - UI
 
-    private func makeDataSource() -> UITableViewDiffableDataSource<Section, NewsItemViewModel> {
-        return UITableViewDiffableDataSource(tableView: self.tableView, cellProvider: {  tableView, indexPath, article in
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsListTableViewCell", for: indexPath) as? NewsListTableViewCell else { return nil }
-            cell.setup(with: article)
-            return cell
-        })
-    }
-
     private func makeTableView() -> UITableView {
         let tableView = UITableView(frame: self.view.bounds)
-        tableView.delegate = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(NewsListTableViewCell.self, forCellReuseIdentifier: "NewsListTableViewCell")
         tableView.tableFooterView = UIView()
