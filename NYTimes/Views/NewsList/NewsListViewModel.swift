@@ -16,8 +16,6 @@ final class NewsListViewModel<Repo: PopularNewsRepo> {
     private(set) var error = BehaviorRelay<Error?>(value: nil)
     private(set) var days = BehaviorRelay<Int>(value: 1)
 
-    let indexTrigger = PublishRelay<Int>()
-
     private let disposeBag = DisposeBag()
 
     init() {
@@ -33,7 +31,7 @@ final class NewsListViewModel<Repo: PopularNewsRepo> {
             return "Popular News (\(articles.count))"
         }.bind(to: self.title).disposed(by: self.disposeBag)
 
-        self.indexTrigger.flatMap({ [weak self] (days) -> Single<Result<PopularNewsResponse, Error>> in
+        self.days.distinctUntilChanged().flatMap({ [weak self] (days) -> Single<Result<PopularNewsResponse, Error>> in
             self?.isLoading.accept(true)
             return Repo().index(days: days).map({ .success($0) }).catch({ Single.just(.failure($0)) })
         }).bind(onNext: { [weak self] (result) in
@@ -46,8 +44,6 @@ final class NewsListViewModel<Repo: PopularNewsRepo> {
                 self?.error.accept(error)
             }
         }).disposed(by: self.disposeBag)
-
-        self.days.distinctUntilChanged().bind(to: self.indexTrigger).disposed(by: self.disposeBag)
     }
 
     // MARK: - Methods

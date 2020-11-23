@@ -58,25 +58,17 @@ class NewsListViewModelTests: XCTestCase {
     }
 
     func testLoad() {
-        self.validViewModel.indexTrigger.subscribe(onNext: { (days) in
-            XCTAssertEqual(days, 7)
+        self.validViewModel.isLoading.subscribe(onNext: { (isLoading) in
+            XCTAssertTrue(isLoading)
         }).disposed(by: self.disposeBag)
 
-        self.validViewModel.load(days: 7)
-    }
-
-    func testDaySelected() {
-        self.validViewModel.indexTrigger.subscribe(onNext: { (days) in
-            XCTAssertEqual(days, 30)
-        }).disposed(by: self.disposeBag)
-
-        self.validViewModel.daySelected(days: 30)
+        self.validViewModel.daySelected(days: 7)
     }
 
     func testDaySelectedSameDay() {
         self.validViewModel.daySelected(days: 30)
 
-        self.validViewModel.indexTrigger.subscribe(onNext: { (_) in
+        self.validViewModel.isLoading.filter({ $0 == true }).skip(1).subscribe(onNext: { (_) in
             XCTFail("Same day should not perform refresh")
         }).disposed(by: self.disposeBag)
 
