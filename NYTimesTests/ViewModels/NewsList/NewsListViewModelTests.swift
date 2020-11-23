@@ -54,25 +54,17 @@ class NewsListViewModelTests: XCTestCase {
     }
 
     func testLoad() {
-        self.validViewModel.index.sink { (days) in
-            XCTAssertEqual(days, 7)
+        self.validViewModel.$isLoading.sink { (isLoading) in
+            XCTAssertTrue(isLoading)
         }.store(in: &self.subscriptions)
 
-        self.validViewModel.load(days: 7)
-    }
-
-    func testDaySelected() {
-        self.validViewModel.index.sink { (days) in
-            XCTAssertEqual(days, 30)
-        }.store(in: &self.subscriptions)
-
-        self.validViewModel.daySelected(days: 30)
+        self.validViewModel.daySelected(days: 7)
     }
 
     func testDaySelectedSameDay() {
         self.validViewModel.daySelected(days: 30)
 
-        self.validViewModel.index.sink { (_) in
+        self.validViewModel.$isLoading.filter({ $0 == true }).dropFirst().sink { (_) in
             XCTFail("Same day should not perform refresh")
         }.store(in: &self.subscriptions)
 

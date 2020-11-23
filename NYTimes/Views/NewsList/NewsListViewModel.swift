@@ -15,7 +15,6 @@ final class NewsListViewModel<Repo: PopularNewsRepo>: ObservableObject {
     @Published private(set) var error: Error?
     @Published private(set) var days: Int = 1
 
-    let index = PassthroughSubject<Int, Never>()
     private var subscriptions = Set<AnyCancellable>()
 
     init() {
@@ -31,8 +30,12 @@ final class NewsListViewModel<Repo: PopularNewsRepo>: ObservableObject {
             return "Popular News (\(articles.count))"
         }).assignNoRetain(to: \.title, on: self).store(in: &self.subscriptions)
 
-        self.index.flatMap({ (days) -> AnyPublisher<Result<PopularNewsResponse, Error>, Never> in
-            Repo().index(days: days).map({ .success($0) }).catch { Just(.failure($0)) }.eraseToAnyPublisher()
+        self.$days.removeDuplicates().flatMap({ [weak self] (days) -> AnyPublisher<Result<PopularNewsResponse, Error>, Never> in
+            self?.isLoading = true
+            return Repo().index(days: days)
+                .map({ .success($0) })
+                .catch { Just(.failure($0)) }
+                .eraseToAnyPublisher()
         }).sink(receiveValue: { [weak self] (result) in
             self?.isLoading = false
             switch result {
@@ -43,18 +46,9 @@ final class NewsListViewModel<Repo: PopularNewsRepo>: ObservableObject {
                 self?.error = error
             }
         }).store(in: &self.subscriptions)
-
-        self.$days.removeDuplicates().sink(receiveValue: { [weak self] days in
-            self?.load(days: days)
-        }).store(in: &self.subscriptions)
     }
 
     // MARK: - Methods
-
-    func load(days: Int) {
-        self.isLoading = true
-        self.index.send(days)
-    }
 
     func daySelected(days: Int) {
         self.days = days
