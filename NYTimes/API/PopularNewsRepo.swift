@@ -49,7 +49,7 @@ final class MockPopularNewsRepo: PopularNewsRepo {
 
 final class MockErrorPopularNewsRepo: PopularNewsRepo {
     func index(days: Int) -> AnyPublisher<PopularNewsResponse, Error> {
-        return Just(()).tryMap({ throw ResponseError.unknown.toError(code: 500) })
+        return Fail(error: ResponseError.unknown.toError(code: 500))
             .delay(for: 1, scheduler: RunLoop.main)
             .eraseToAnyPublisher()
     }
